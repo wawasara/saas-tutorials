@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 module.exports = {
   // Secret key for JWT signing and encryption
   secret: "eogksalsrnrdl jarangdlqslek",
