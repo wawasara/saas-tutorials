@@ -88,6 +88,16 @@ module.exports = function(app) {
   // Send reply in conversation
   chatRoutes.post("/:conversationId", requireAuth, ChatController.sendReply);
 
+  // Delete  conversation
+  chatRoutes.delete(
+    "/:conversationId",
+    requireAuth,
+    ChatController.deleteConversation
+  );
+
+  // Update  Message
+  chatRoutes.put("/:messageId", requireAuth, ChatController.updateMessage);
+
   // Start new conversation
   chatRoutes.post(
     "/new/:recipient",

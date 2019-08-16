@@ -4,8 +4,6 @@ const Conversation = require("../models/conversation"),
 
 exports.getConversations = function(req, res, next) {
   // Only return one message from each conversation to display as snippet
-  console.log(`req.user._id ${req.user._id}`);
-  console.log(`req.params ${req.params.recipient}`);
   Conversation.find({ participants: req.user._id })
     .select("_id")
     .exec((err, conversations) => {
@@ -118,4 +116,42 @@ exports.sendReply = function(req, res, next) {
 
     return res.status(200).json({ message: "Reply successfully sent!" });
   });
+};
+
+// DELETE Route to Delete Conversation
+exports.deleteConversation = function(req, res, next) {
+  Conversation.findOneAndRemove(
+    {
+      $and: [{ _id: req.params.conversationId }, { participants: req.user._id }]
+    },
+    function(err) {
+      if (err) {
+        res.send({ error: err });
+        return next(err);
+      }
+
+      res.status(200).json({ message: "Conversation removed!" });
+      return next();
+    }
+  );
+};
+
+// PUT Route to Update Message
+exports.updateMessage = function(req, res, next) {
+  Message.findOneAndUpdate(
+    {
+      $and: [{ _id: req.params.messageId }, { author: req.user._id }]
+    },
+    {
+      body: req.body.composedMessage
+    },
+    function(err, message) {
+      if (err) {
+        res.send({ error: err });
+        return next(err);
+      }
+      res.status(200).json({ message: req.body.composedMessage });
+      return next();
+    }
+  );
 };
