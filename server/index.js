@@ -5,7 +5,8 @@ const express = require("express"),
   logger = require("morgan"),
   router = require("./router"),
   mongoose = require("mongoose"),
-  config = require("./config/main");
+  config = require("./config/main"),
+  socketEvents = require("./socketEvents");
 
 // Database Connection
 mongoose.connect(config.database, { useNewUrlParser: true });
@@ -13,6 +14,9 @@ mongoose.connect(config.database, { useNewUrlParser: true });
 // Start the server
 const server = app.listen(config.port);
 console.log(`Express server is running on port ${config.port}.`);
+
+const io = require("socket.io").listen(server);
+socketEvents(io);
 
 // Setting up basic middleware for all Express requests
 app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
