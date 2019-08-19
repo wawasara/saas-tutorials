@@ -1,51 +1,39 @@
-const webpack = require("webpack");
-const path = require("path");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const HtmlWebPackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-const config = {
-  context: __dirname,
-  entry: "./src/index.js",
-  output: {
-    path: __dirname,
-    filename: "bundle.js"
-  },
+module.exports = {
   module: {
-    loaders: [
+    rules: [
       {
+        test: /\.js$/,
         exclude: /node_modules/,
-        test: /\.(js|jsx)$/,
-        loader: "babel"
+        use: {
+          loader: "babel-loader"
+        }
       },
       {
-        test: /\.scss$/,
-        loader: ExtractTextPlugin.extract("css!sass")
+        test: /\.html$/,
+        use: [
+          {
+            loader: "html-loader",
+            options: { minimize: true }
+          }
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, "css-loader"]
       }
     ]
   },
-  devServer: {
-    historyApiFallback: true,
-    contentBase: "./"
-  },
   plugins: [
-    new webpack.DefinePlugin({
-      "process.env": { NODE_ENV: JSON.stringify("production") }
+    new HtmlWebPackPlugin({
+      template: "./src/index.html",
+      filename: "./index.html"
     }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false },
-      output: { comments: false },
-      mangle: false,
-      sourcemap: false,
-      minimize: true,
-      mangle: {
-        except: ["$super", "$", "exports", "require", "$q", "$ocLazyLoad"]
-      }
-    }),
-    new ExtractTextPlugin("src/public/stylesheets/app.css", {
-      allChunks: true
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
+      chunkFilename: "[id]css"
     })
   ]
 };
-
-module.exports = config;
