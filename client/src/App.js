@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import codeURL from "./code.png";
+
 const App = () => {
   return (
     <div>
@@ -7,5 +9,6 @@ const App = () => {
     </div>
   );
 };
+
 export default App;
 ReactDOM.render(<App />, document.getElementById("app"));
